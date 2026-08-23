@@ -30,6 +30,12 @@ const router = createRouter({
       meta: { title: '즐겨찾기 - 사업장 기상 현황' },
     },
     {
+      path: '/globe',
+      name: 'SiteGlobe',
+      component: () => import('@/views/SiteGlobeView.vue'),
+      meta: { title: '지구본 - 사업장 기상 현황' },
+    },
+    {
       path: '/:pathMatch(.*)*',
       name: 'NotFound',
       component: () => import('@/views/NotFoundView.vue'),

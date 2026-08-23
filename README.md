@@ -2,44 +2,9 @@
 
 가상 사업장 5곳의 24시간 강수확률을 받아 **야외 작업 가능 여부를 3단계로 판정**하는 Vue 3 학습 프로젝트입니다.
 
-**배포 URL** :
+**배포 URL** : https://skala-vue-kiteak.vercel.app/
 
-— 사업장 정보는 임의 데이터로, 실제 사업장과 무관합니다.
-
----
-
-## 기술 스택
-
-| 구분       | 사용 기술      |
-| ---------- | -------------- |
-| 프레임워크 | Vue 3.5        |
-| 라우팅     | Vue Router     |
-| 상태 관리  | Pinia          |
-| HTTP       | axios          |
-| API        | OpenWeatherMap |
-
----
-
-## 실행
-
-```sh
-npm install
-```
-
-프로젝트 루트에 `.env.local`을 만들고 키를 넣습니다.
-
-```sh
-VITE_OPENWEATHER_KEY=발급받은키
-```
-
-```sh
-npm run dev       # http://localhost:5173
-npm run build
-npm run preview
-npm run lint
-```
-
----
+사업장 정보는 임의 데이터로, 실제 사업장과 무관합니다.
 
 ## 파일 구조
 
@@ -55,14 +20,19 @@ src/
 │   ├── WeatherCard.vue
 │   ├── UnitToggler.vue
 │   ├── StatusBar.vue
-│   └── EmptyState.vue
+│   ├── EmptyState.vue
+│   ├── SiteShadeMap.vue
+│   └── SiteGlobe.vue
 └── views/
     ├── WeatherHomeView.vue
     ├── FavoritesView.vue
     ├── WeatherDetailView.vue
     ├── WeatherAboutView.vue
+    ├── SiteGlobeView.vue
     └── NotFoundView.vue
 ```
+
+---
 
 ## 각 파일별 주요사항
 
@@ -121,6 +91,41 @@ src/
 
 ---
 
+## 기술 스택
+
+| 구분       | 사용 기술      |
+| ---------- | -------------- |
+| 프레임워크 | Vue 3.5        |
+| 라우팅     | Vue Router     |
+| 상태 관리  | Pinia          |
+| HTTP       | axios          |
+| API        | OpenWeatherMap |
+
+---
+
+## 실행
+
+```sh
+npm install
+```
+
+프로젝트 루트에 `.env.local`을 만들고 키를 넣습니다.
+
+```sh
+VITE_OPENWEATHER_KEY=발급받은키
+```
+
+```sh
+npm run dev       # http://localhost:5173
+npm run build
+npm run preview
+npm run lint
+```
+
+---
+
+---
+
 ## 위험도 판정
 
 24시간(3시간 간격 8건) 예보 중 **가장 높은 강수확률 하나**로 판정합니다. 야외 작업은 강수 전 철수 준비 시간이 필요하므로, 한 번이라도 임계값을 넘으면 해당 등급으로 봅니다.
@@ -159,3 +164,5 @@ src/
 1. 상세페이지에서 임의의 사업장 평면도를 추가하여, 각 날씨별 사업장 추천 경로를 안내합니다. 당장은 목업 기능이지만, 차후 사업장별로 관리자가 기상 이상 징후 발생 시 설정할 수 있게 확장할 기능입니다.
 2. 기상 조건 기반으로 판정됩니다.
 3. AI를 활용하여, 우선적으로 그림자 및 태양위치에 대한 간단한 로직 계산을 구현했습니다. (차후 수정 필요)
+4. 네비게이션에 지구본 페이지를 추가하여, 정사영 투영 지구본과 확대 인셋으로 사업장 5곳의 위치를 함께 확인할 수 있습니다.
+5. 실제 해안선 데이터와 현재 시각의 태양 직하점을 계산해, 지구본 위에 낮과 밤 영역을 구분해 표시합니다.
