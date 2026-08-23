@@ -121,29 +121,6 @@ npm run lint
 
 ---
 
-## 파일 구조
-
-```
-src/
-├── main.js
-├── App.vue
-├── router/index.js
-├── stores/configStore.js
-├── components/
-│   ├── BaseDashboardCard.vue
-│   ├── SearchBar.vue
-│   ├── WeatherCard.vue
-│   ├── UnitToggler.vue
-│   ├── StatusBar.vue
-│   └── EmptyState.vue
-└── views/
-    ├── WeatherHomeView.vue
-    ├── FavoritesView.vue
-    ├── WeatherDetailView.vue
-    ├── WeatherAboutView.vue
-    └── NotFoundView.vue
-```
-
 ---
 
 ## 위험도 판정
