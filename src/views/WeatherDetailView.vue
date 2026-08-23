@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import axios from 'axios'
+import SiteShadeMap from '@/components/SiteShadeMap.vue'
 import { useConfigStore } from '@/stores/configStore'
 
 const props = defineProps({
@@ -53,17 +54,30 @@ const weatherInfo = ref({
 })
 
 const forecastList = ref([
-  { key: 'mock_1', time: '03:00', temp: 22, status: '맑음' },
-  { key: 'mock_2', time: '06:00', temp: 23, status: '맑음' },
-  { key: 'mock_3', time: '09:00', temp: 26, status: '구름 조금' },
-  { key: 'mock_4', time: '12:00', temp: 29, status: '구름 조금' },
-  { key: 'mock_5', time: '15:00', temp: 30, status: '맑음' },
-  { key: 'mock_6', time: '18:00', temp: 28, status: '흐림' },
-  { key: 'mock_7', time: '21:00', temp: 25, status: '흐림' },
-  { key: 'mock_8', time: '24:00', temp: 23, status: '맑음' },
+  { key: 'mock_1', time: '03:00', temp: 22, pop: 0.1, status: '맑음' },
+  { key: 'mock_2', time: '06:00', temp: 23, pop: 0.2, status: '맑음' },
+  { key: 'mock_3', time: '09:00', temp: 26, pop: 0.3, status: '구름 조금' },
+  { key: 'mock_4', time: '12:00', temp: 29, pop: 0.5, status: '구름 조금' },
+  { key: 'mock_5', time: '15:00', temp: 30, pop: 0.4, status: '맑음' },
+  { key: 'mock_6', time: '18:00', temp: 28, pop: 0.2, status: '흐림' },
+  { key: 'mock_7', time: '21:00', temp: 25, pop: 0.1, status: '흐림' },
+  { key: 'mock_8', time: '24:00', temp: 23, pop: 0.0, status: '맑음' },
 ])
 
 const airQualityIndex = ref(2)
+
+const RISK_DANGER_POP = 0.7
+const RISK_WARN_POP = 0.4
+
+const judgeRisk = (forecast) => {
+  if (!forecast || forecast.length === 0) return 'safe'
+  const maxPop = Math.max(...forecast.map((f) => f.pop ?? 0))
+  if (maxPop >= RISK_DANGER_POP) return 'danger'
+  if (maxPop >= RISK_WARN_POP) return 'warn'
+  return 'safe'
+}
+
+const riskLevel = computed(() => judgeRisk(forecastList.value))
 
 function toDisplayTemp(rawTemp) {
   if (configStore.unit === 'fahrenheit') return Math.round((rawTemp * 9) / 5 + 32)
@@ -114,6 +128,7 @@ async function loadDetail(city) {
         hour12: false,
       }),
       temp: Math.round(item.main.temp),
+      pop: item.pop ?? 0,
       status: item.weather[0].description,
     }))
   } else {
@@ -197,6 +212,19 @@ onMounted(() => {
             </div>
           </dl>
         </section>
+
+        <el-card class="panel" shadow="never">
+          <template #header>
+            <h2 class="panel__subtitle panel__subtitle--flush">현장 이동 경로 안내</h2>
+          </template>
+          <SiteShadeMap
+            :lat="cityInfo.lat"
+            :lon="cityInfo.lon"
+            :site-name="cityInfo.name"
+            :risk-level="riskLevel"
+            :forecast="forecastList"
+          />
+        </el-card>
 
         <section class="panel">
           <h2 class="panel__subtitle">24시간 예보</h2>

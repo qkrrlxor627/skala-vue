@@ -95,6 +95,11 @@ const techStack = ref([
       야외 작업은 강수 시작 전 철수 준비 시간이 필요하기 때문입니다.
     </p>
 
+    <p class="about__shade">
+      상세 페이지에서는 현재 시각의 태양 위치를 계산해 건물 그림자를 표시하고, 기상 조건(폭염, 폭우,
+      폭설)에 따라 권장 이동 경로를 안내합니다. 평면도는 개념 시연용 가상 도면입니다.
+    </p>
+
     <h2 class="about__subtitle">사용 기술 스택</h2>
     <ul class="stack">
       <li v-for="tech in techStack" :key="tech.id" class="stack__item">
@@ -195,6 +200,12 @@ const techStack = ref([
   font-size: 12px;
   line-height: 1.7;
   color: #7b8794;
+}
+.about__shade {
+  margin: 0 0 26px;
+  font-size: 13px;
+  line-height: 1.75;
+  color: #52606d;
 }
 .stack {
   margin: 0 0 24px;
