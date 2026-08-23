@@ -11,6 +11,7 @@ import UnitToggler from '@/components/UnitToggler.vue'
       <nav class="nav__menu">
         <RouterLink to="/">대시보드</RouterLink>
         <RouterLink to="/favorites">즐겨찾기</RouterLink>
+        <RouterLink to="/globe">지구본</RouterLink>
         <RouterLink to="/about">소개</RouterLink>
       </nav>
 

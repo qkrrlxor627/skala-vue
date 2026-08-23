@@ -20,12 +20,15 @@ src/
 │   ├── WeatherCard.vue
 │   ├── UnitToggler.vue
 │   ├── StatusBar.vue
-│   └── EmptyState.vue
+│   ├── EmptyState.vue
+│   ├── SiteShadeMap.vue
+│   └── SiteGlobe.vue
 └── views/
     ├── WeatherHomeView.vue
     ├── FavoritesView.vue
     ├── WeatherDetailView.vue
     ├── WeatherAboutView.vue
+    ├── SiteGlobeView.vue
     └── NotFoundView.vue
 ```
 
@@ -161,3 +164,5 @@ npm run lint
 1. 상세페이지에서 임의의 사업장 평면도를 추가하여, 각 날씨별 사업장 추천 경로를 안내합니다. 당장은 목업 기능이지만, 차후 사업장별로 관리자가 기상 이상 징후 발생 시 설정할 수 있게 확장할 기능입니다.
 2. 기상 조건 기반으로 판정됩니다.
 3. AI를 활용하여, 우선적으로 그림자 및 태양위치에 대한 간단한 로직 계산을 구현했습니다. (차후 수정 필요)
+4. 네비게이션에 지구본 페이지를 추가하여, 정사영 투영 지구본과 확대 인셋으로 사업장 5곳의 위치를 함께 확인할 수 있습니다.
+5. 실제 해안선 데이터와 현재 시각의 태양 직하점을 계산해, 지구본 위에 낮과 밤 영역을 구분해 표시합니다.
