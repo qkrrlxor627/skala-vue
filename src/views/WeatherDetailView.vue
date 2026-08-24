@@ -68,16 +68,34 @@ const airQualityIndex = ref(2)
 
 const RISK_DANGER_POP = 0.7
 const RISK_WARN_POP = 0.4
+const HEAT_DANGER_TEMP = 40
+const HEAT_WARN_TEMP = 33
+
+const LEVEL_RANK = { safe: 0, warn: 1, danger: 2 }
+const LEVEL_LABEL = { safe: '작업 가능', warn: '주의 권고', danger: '작업 중단 권고' }
 
 const judgeRisk = (forecast) => {
-  if (!forecast || forecast.length === 0) return 'safe'
+  if (!forecast || forecast.length === 0) return { level: 'safe', label: LEVEL_LABEL.safe }
+
   const maxPop = Math.max(...forecast.map((f) => f.pop ?? 0))
-  if (maxPop >= RISK_DANGER_POP) return 'danger'
-  if (maxPop >= RISK_WARN_POP) return 'warn'
-  return 'safe'
+  const maxTemp = Math.max(...forecast.map((f) => f.temp ?? 0))
+
+  const popLevel = maxPop >= RISK_DANGER_POP ? 'danger' : maxPop >= RISK_WARN_POP ? 'warn' : 'safe'
+  const heatLevel =
+    maxTemp >= HEAT_DANGER_TEMP ? 'danger' : maxTemp >= HEAT_WARN_TEMP ? 'warn' : 'safe'
+
+  const level = LEVEL_RANK[heatLevel] > LEVEL_RANK[popLevel] ? heatLevel : popLevel
+  if (level === 'safe') return { level, label: LEVEL_LABEL.safe }
+
+  // 최종 등급에 실제로 기여한 사유만 표기 (둘 다면 '폭염·강수')
+  const reasons = []
+  if (heatLevel === level) reasons.push('폭염')
+  if (popLevel === level) reasons.push('강수')
+  return { level, label: LEVEL_LABEL[level] + ' (' + reasons.join('·') + ')' }
 }
 
-const riskLevel = computed(() => judgeRisk(forecastList.value))
+// SiteShadeMap 의 risk-level prop 은 String 이므로 등급 문자열만 넘긴다
+const riskLevel = computed(() => judgeRisk(forecastList.value).level)
 
 function toDisplayTemp(rawTemp) {
   if (configStore.unit === 'fahrenheit') return Math.round((rawTemp * 9) / 5 + 32)
