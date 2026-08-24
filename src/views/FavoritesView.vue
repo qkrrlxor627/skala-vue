@@ -40,12 +40,30 @@ const SITE_LIST = [
 
 const RISK_DANGER_POP = 0.7
 const RISK_WARN_POP = 0.4
+const HEAT_DANGER_TEMP = 40
+const HEAT_WARN_TEMP = 33
+
+const LEVEL_RANK = { safe: 0, warn: 1, danger: 2 }
+const LEVEL_LABEL = { safe: '작업 가능', warn: '주의 권고', danger: '작업 중단 권고' }
 
 const judgeRisk = (forecast) => {
-  const maxPop = Math.max(...forecast.map((f) => f.pop))
-  if (maxPop >= RISK_DANGER_POP) return { level: 'danger', label: '작업 중단 권고' }
-  if (maxPop >= RISK_WARN_POP) return { level: 'warn', label: '주의 권고' }
-  return { level: 'safe', label: '작업 가능' }
+  if (!forecast || forecast.length === 0) return { level: 'safe', label: LEVEL_LABEL.safe }
+
+  const maxPop = Math.max(...forecast.map((f) => f.pop ?? 0))
+  const maxTemp = Math.max(...forecast.map((f) => f.temp ?? 0))
+
+  const popLevel = maxPop >= RISK_DANGER_POP ? 'danger' : maxPop >= RISK_WARN_POP ? 'warn' : 'safe'
+  const heatLevel =
+    maxTemp >= HEAT_DANGER_TEMP ? 'danger' : maxTemp >= HEAT_WARN_TEMP ? 'warn' : 'safe'
+
+  const level = LEVEL_RANK[heatLevel] > LEVEL_RANK[popLevel] ? heatLevel : popLevel
+  if (level === 'safe') return { level, label: LEVEL_LABEL.safe }
+
+  // 최종 등급에 실제로 기여한 사유만 표기 (둘 다면 '폭염·강수')
+  const reasons = []
+  if (heatLevel === level) reasons.push('폭염')
+  if (popLevel === level) reasons.push('강수')
+  return { level, label: LEVEL_LABEL[level] + ' (' + reasons.join('·') + ')' }
 }
 
 function buildMockForecast(baseTemp, pops) {
@@ -78,12 +96,12 @@ const MOCK_SITES = [
   },
   {
     ...SITE_LIST[2],
-    temp: 29,
+    temp: 37,
     status: '맑음',
     humidity: 55,
     wind: 1.8,
     pressure: 1012,
-    forecast: buildMockForecast(29, [0.0, 0.0, 0.1, 0.1, 0.0, 0.0, 0.0, 0.0]),
+    forecast: buildMockForecast(37, [0.0, 0.0, 0.1, 0.1, 0.0, 0.0, 0.0, 0.0]),
   },
   {
     ...SITE_LIST[3],
@@ -96,12 +114,12 @@ const MOCK_SITES = [
   },
   {
     ...SITE_LIST[4],
-    temp: 22,
+    temp: 34,
     status: '흐림',
     humidity: 64,
     wind: 3.1,
     pressure: 1011,
-    forecast: buildMockForecast(22, [0.1, 0.1, 0.2, 0.3, 0.2, 0.1, 0.0, 0.0]),
+    forecast: buildMockForecast(34, [0.1, 0.1, 0.2, 0.3, 0.2, 0.1, 0.0, 0.0]),
   },
 ]
 

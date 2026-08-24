@@ -82,6 +82,9 @@ const CONDITIONS = [
   { value: 'snow', label: '폭설', color: '#17a2b8' },
 ]
 
+// 폭염 판정 기준은 위험도 판정(judgeRisk)의 HEAT_WARN_TEMP 와 동일하게 33도로 맞춘다
+const HEAT_WARN_TEMP = 33
+
 const MIN_ALTITUDE_DEG = 3
 const MAX_SHADOW_M = 200
 const RAD = Math.PI / 180
@@ -95,7 +98,7 @@ const autoCondition = computed(() => {
   const maxTemp = Math.max(...list.map((f) => f.temp ?? 0))
   if (maxTemp <= 0 && maxPop >= 0.4) return 'snow'
   if (maxPop >= 0.6) return 'rain'
-  if (maxTemp >= 31) return 'heat'
+  if (maxTemp >= HEAT_WARN_TEMP) return 'heat'
   return 'heat'
 })
 
